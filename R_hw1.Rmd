@@ -1,0 +1,49 @@
+---
+title: "[Csss508a_sp18] Homework 1"
+author: "Mina Ekramnia"
+date: "April 3rd, 2018"
+output: html_document
+theme: readable
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(pander) 
+library(sjPlot)
+```
+
+## Overview of the Swiss Fertility data (1988) 
+This dataset provides a time demographic transition of fertility measures(Agriculture, Examination, Education, Catholic and Infant Mortality) for 47 provinces of Switzerland in the year 1888.
+Here is the summary of statistics for the variables: 
+
+```{r swiss, echo=FALSE}
+pander(summary(swiss))
+pander(head(swiss, 5), style = "rmarkdown", split.tables = 120)
+```
+
+
+## Pairwise comparison of the variables
+Here we can see the joint relationships for each combination of the variables:
+
+```{r pairwise, echo=FALSE}
+pairs(swiss, col="violet", main = "Pairwise comparisons of Swiss variables")
+```
+
+## Regression Analysis
+
+We investigate the relationship of Fertility with Education and Agriculture. Resutls are showing in graphs and statistical tables: 
+
+Regression Fertility-Agriculture
+```{r regresseion Fertility-Agriculture, echo=FALSE}
+sjt.lm(lm(Fertility~Agriculture, data=swiss), show.fstat = TRUE)
+sjt.lm(lm(Fertility~Education, data=swiss), show.fstat = TRUE)
+```
+
+```{r plot regression, echo=FALSE}
+plot(Fertility~Agriculture, data=swiss)
+plot(Fertility~Education, data=swiss)
+
+```
+
+
+As we see there is a significant relationship between education and the fertility rate in the data, as the education increases the fertility rate decreases. However, we do not see a concise pattern for the agricutlture. 

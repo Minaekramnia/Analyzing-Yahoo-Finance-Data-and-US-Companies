@@ -1,0 +1,100 @@
+---
+title: "Hw_2"
+author: "Mina Ekramnia"
+date: "4/9/2018"
+output: html_document
+---
+```{r setup, include=FALSE}
+library(gapminder)
+library(tidyverse)
+```
+
+## Gapminder Data
+
+Gapminder is a package of data containing 142 countries. The package provides values for life expectancy, GDP per capita, and population, every five years, from 1952 to 2007.
+
+We will see a summary of the data first: 
+
+```{r summary, echo=FALSE}
+summary(gapminder)
+```
+
+
+### Including Plots
+
+First we take a look at only one country: Afghanistan and its life expectancy through time, in a scatter plot:
+```{r Afghan, echo=FALSE}
+Afghanistan <- gapminder %>%  #take the gapminder data send to Afghanistan . returning all the rows. 
+  filter(country == "Afghanistan" )
+## Plotting Life Expectancy in Afghanistan 
+```{r Afghanistan, echo=FALSE}
+ggplot(data = Afghanistan, aes(x = year, y = lifeExp)) +
+    geom_point(color = "blue", size = 5) +
+    xlab("Year") + ylab("Life expectancy") +
+    ggtitle("Life expectancy in Afghanistan") +
+    theme_bw()
+```
+
+Now we will segment the observations by variables: 
+```{r Plotting, echo=FALSE}
+gapminder %>%
+ggplot(aes(x=year, y=lifeExp, group=country, color=country)) + 
+  facet_wrap(~continent) +  #plot plot plot. continent y axis
+geom_line() +
+geom_label(data = gapminder %>% group_by(country) %>% slice(1), aes(label=country)) + #draw line. #wiht other options on top
+#we should call gapminder again
+#do it indiviudally for each group
+  #geom_text is like geom_lable but just dont put the box
+   #facet_grid()
+theme(legend.position = "none") +
+ggtitle("Average Life Expectancy of each Continents per Country ") + 
+    xlab("Year") + ylab("Life expectancy")
+```       
+
+## Manually Specified Legend
+Here we selected two countries to plot, and manualy changing the color and the lable. 
+```{r Manual, echo=FALSE}
+gapminder%>%
+  filter(country %in% c("United States","Mexico")) %>%
+  ggplot(aes(x=year, y= lifeExp, group = country, color=country)) +
+  geom_line() + 
+ scale_color_manual("Country", values= c("United States" = "black", "Mexico" ="red" )) +
+  ggtitle("Average LifeExpectancy of the Mexico vs. US ") +
+  theme_gray(base_size = 12)  +
+    xlab("Year") + ylab("Life expectancy")
+
+```
+
+```{r Fussy, echo=FALSE}
+ggplot(data = gapminder, aes(x = year, y = lifeExp, group = country)) +
+    geom_line(alpha = 0.5, aes(color = "Country", size = "Country")) +
+    geom_line(stat = "smooth", method = "loess", 
+              aes(group = continent, color = "Continent", 
+                  size = "Continent"), alpha = 0.5) +
+    facet_wrap(~ continent, nrow = 2) +
+    scale_color_manual(name = "Unit", values = c("Country" = "blue",
+                                      "Continent" = "turquoise1")) +
+    scale_size_manual(name = "Unit", values = c("Country" = 0.5, 
+                                                "Continent" = 4)) +
+    theme_minimal(base_size = 10) + 
+    theme(legend.position=c(1, 1), 
+          axis.text.x = element_text(angle = 90)) +
+  ggtitle("Average Life Expectancy of the Continent and per Country ") +
+    xlab("Year") + ylab("Life expectancy")
+  
+```
+
+## Axis Change 
+Here we change the limits of axis based on the data of Afghanistan. 
+
+
+```{r Axis, echo=FALSE}
+ggplot(data = Afghanistan, aes(x = year, y = gdpPercap)) +
+    geom_line() +
+    scale_y_log10(breaks = c(1000, 2000, 3000, 4000, 5000)) +
+    xlim(1950, 2010) + 
+  ggtitle("Afghanistan's GDP per capita") +
+  theme_gray(base_size = 15) +
+    xlab("Year") + ylab("GDP per Capital")
+
+```
